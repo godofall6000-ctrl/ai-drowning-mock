@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Drowning Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+        }
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .upload-area:hover {
+            border-color: #0056b3;
+            background: #e3f2fd;
+        }
+        .upload-area.dragover {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .result-card {
+            display: none;
+            margin-top: 20px;
+        }
+        .confidence-bar {
+            height: 20px;
+            border-radius: 10px;
+            background: #e9ecef;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+        .model-selector {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-water"></i> AI Drowning Detection
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#api">API</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/username/ai-drowning-detection" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-brain"></i> AI-Powered Drowning Detection
+                    </h1>
+                    <p class="lead mb-4">
+                        Advanced computer vision system using deep learning to detect drowning incidents
+                        in real-time from video feeds and images.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-light btn-lg" onclick="scrollToUpload()">
+                            <i class="fas fa-upload"></i> Try Demo
+                        </button>
+                        <a href="#features" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-info-circle"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Model Selector -->
+        <div class="model-selector">
+            <h4 class="mb-3"><i class="fas fa-cogs"></i> Model Selection</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="modelSelect" class="form-label">Choose AI Model:</label>
+                    <select class="form-select" id="modelSelect">
+                        {% for model in models %}
+                        <option value="{{ model }}" {% if model == current_model %}selected{% endif %}>
+                            {{ model.replace('_', ' ').title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <strong>Current Model:</strong>
+                            <span id="currentModelDisplay">{{ current_model.replace('_', ' ').title() }}</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-camera"></i> Image Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="uploadArea" class="upload-area">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h5>Drag & Drop Image Here</h5>
+                            <p class="text-muted">or click to browse</p>
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                            <button class="btn btn-primary" onclick="document.getElementById('imageInput').click()">
+                                <i class="fas fa-folder-open"></i> Choose File
+                            </button>
+                            <p class="mt-2 small text-muted">Supported formats: PNG, JPG, JPEG</p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div id="imagePreview" class="text-center mt-3" style="display: none;">
+                            <img id="previewImg" class="img-fluid rounded" style="max-height: 300px;">
+                            <br>
+                            <button class="btn btn-success mt-3" id="analyzeBtn">
+                                <i class="fas fa-search"></i> Analyze Image
+                            </button>
+                        </div>
+
+                        <!-- Results -->
+                        <div id="resultCard" class="card result-card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Analysis Results</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 id="predictionResult" class="text-primary"></h5>
+                                        <div class="confidence-bar mt-3">
+                                            <div id="confidenceBar" class="confidence-fill"></div>
+                                        </div>
+                                        <p class="mt-2 small text-muted">
+                                            Confidence: <span id="confidenceText"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Probability Distribution</h6>
+                                        <div id="probabilityBars"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i>
+                                        Analysis completed in <span id="processingTime"></span>ms
+                                        using <span id="modelUsed"></span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading -->
+                        <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Analyzing...</span>
+                            </div>
+                            <p class="mt-2">Analyzing image...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section id="features" class="mt-5">
+            <h2 class="text-center mb-4">Key Features</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                            <h5>Multiple AI Models</h5>
+                            <p>Choose from various CNN architectures including ResNet, EfficientNet, and custom models optimized for drowning detection.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-tachometer-alt fa-3x text-success mb-3"></i>
+                            <h5>Real-time Processing</h5>
+                            <p>Fast inference with optimized models supporting real-time video analysis and immediate risk assessment.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                            <h5>High Accuracy</h5>
+                            <p>Advanced ensemble methods and cross-validation ensure reliable detection with minimal false positives.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Section -->
+        <section id="api" class="mt-5">
+            <h2 class="text-center mb-4">REST API</h2>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-code"></i> API Endpoints</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>POST /api/predict</h6>
+                                    <p class="small text-muted">Upload image file for analysis</p>
+                                    <code class="d-block mb-3">curl -X POST -F "file=@image.jpg" http://localhost:5000/api/predict</code>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>GET /api/models</h6>
+                                    <p class="small text-muted">List available models</p>
+                                    <code class="d-block mb-3">curl http://localhost:5000/api/models</code>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>API Documentation:</strong>
+                                Complete API documentation available at
+                                <a href="/docs" target="_blank">/docs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 AI Drowning Detection System. Open source project.</p>
+            <div class="mt-3">
+                <a href="https://github.com/username/ai-drowning-detection" class="text-white me-3" target="_blank">
+                    <i class="fab fa-github fa-2x"></i>
+                </a>
+                <a href="https://pypi.org/project/ai-drowning-detection/" class="text-white me-3" target="_blank">
+                    <i class="fab fa-python fa-2x"></i>
+                </a>
+                <a href="mailto:team@example.com" class="text-white">
+                    <i class="fas fa-envelope fa-2x"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedFile = null;
+        let selectedModel = '{{ current_model }}';
+
+        // Model selection
+        document.getElementById('modelSelect').addEventListener('change', function() {
+            selectedModel = this.value;
+            document.getElementById('currentModelDisplay').textContent =
+                selectedModel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+            // Switch model via API
+            fetch(`/api/models/${selectedModel}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Model switched successfully');
+                    }
+                })
+                .catch(error => console.error('Error switching model:', error));
+        });
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('dragover');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        imageInput.addEventListener('change', function(e) {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                previewFile(selectedFile);
+            }
+        }
+
+        function previewFile(file) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    uploadArea.style.display = 'none';
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Analysis
+        document.getElementById('analyzeBtn').addEventListener('click', analyzeImage);
+
+        function analyzeImage() {
+            if (!selectedFile) return;
+
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultCard = document.getElementById('resultCard');
+
+            loadingSpinner.style.display = 'block';
+            resultCard.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('model', selectedModel);
+
+            const startTime = Date.now();
+
+            fetch('/api/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const processingTime = Date.now() - startTime;
+                loadingSpinner.style.display = 'none';
+
+                if (data.success) {
+                    displayResults(data.result, processingTime);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                console.error('Error:', error);
+                alert('Analysis failed. Please try again.');
+            });
+        }
+
+        function displayResults(result, processingTime) {
+            const resultCard = document.getElementById('resultCard');
+            const predictionResult = document.getElementById('predictionResult');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            const probabilityBars = document.getElementById('probabilityBars');
+            const processingTimeSpan = document.getElementById('processingTime');
+            const modelUsedSpan = document.getElementById('modelUsed');
+
+            // Update prediction
+            predictionResult.textContent = result.prediction.toUpperCase();
+            predictionResult.className = result.prediction === 'drowning' ?
+                'text-danger' : 'text-success';
+
+            // Update confidence
+            const confidencePercent = (result.confidence * 100).toFixed(1);
+            confidenceBar.style.width = confidencePercent + '%';
+            confidenceText.textContent = confidencePercent + '%';
+
+            // Update probabilities
+            probabilityBars.innerHTML = '';
+            Object.entries(result.probabilities).forEach(([label, prob]) => {
+                const percent = (prob * 100).toFixed(1);
+                const barClass = label === 'drowning' ? 'bg-danger' : 'bg-success';
+                probabilityBars.innerHTML += `
+                    <div class="mb-2">
+                        <small>${label.toUpperCase()}: ${percent}%</small>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar ${barClass}" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update metadata
+            processingTimeSpan.textContent = processingTime;
+            modelUsedSpan.textContent = result.model_used.replace(/_/g, ' ').toUpperCase();
+
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToUpload() {
+            document.getElementById('uploadArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI Drowning Detection System loaded');
+        });
+    </script>
+</body>
+</html>

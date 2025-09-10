@@ -1,0 +1,69 @@
+{
+  "training_date": "2025-09-10T21:50:12.432713",
+  "demo_mode": true,
+  "description": "Demonstration training results (simulated)",
+  "models_trained": 5,
+  "total_training_time": 452.75042096165674,
+  "results": [
+    {
+      "model_name": "Basic CNN",
+      "architecture": "Custom CNN with 4 conv blocks",
+      "training_time": 111.33216749979425,
+      "final_accuracy": 0.9655244293034283,
+      "final_val_accuracy": 0.9190601710384172,
+      "final_loss": 0.1016848685635111,
+      "final_val_loss": 0.12172685850854222,
+      "parameters": 331738,
+      "epochs_completed": 5,
+      "best_epoch": 5
+    },
+    {
+      "model_name": "ResNet50",
+      "architecture": "Transfer learning with ResNet50",
+      "training_time": 101.44445527252725,
+      "final_accuracy": 0.9266153534542102,
+      "final_val_accuracy": 0.8537446463186519,
+      "final_loss": 0.12830783630836648,
+      "final_val_loss": 0.169050327600815,
+      "parameters": 1271825,
+      "epochs_completed": 5,
+      "best_epoch": 3
+    },
+    {
+      "model_name": "EfficientNet-B0",
+      "architecture": "Compound scaling architecture",
+      "training_time": 100.44873998299308,
+      "final_accuracy": 0.9129348787572034,
+      "final_val_accuracy": 0.8797834557852411,
+      "final_loss": 0.12556663777667587,
+      "final_val_loss": 0.16310873267532386,
+      "parameters": 4933889,
+      "epochs_completed": 5,
+      "best_epoch": 4
+    },
+    {
+      "model_name": "MobileNetV2",
+      "architecture": "Mobile-optimized architecture",
+      "training_time": 39.21473392248491,
+      "final_accuracy": 0.9653094267729152,
+      "final_val_accuracy": 0.8887254608265984,
+      "final_loss": 0.09442696300676501,
+      "final_val_loss": 0.15132193380326614,
+      "parameters": 2348598,
+      "epochs_completed": 5,
+      "best_epoch": 5
+    },
+    {
+      "model_name": "Ensemble",
+      "architecture": "Combined model predictions",
+      "training_time": 100.31032428385726,
+      "final_accuracy": 0.971402194687931,
+      "final_val_accuracy": 0.9222872407595235,
+      "final_loss": 0.14885646292780352,
+      "final_val_loss": 0.17333341311184577,
+      "parameters": 2193871,
+      "epochs_completed": 5,
+      "best_epoch": 4
+    }
+  ]
+}

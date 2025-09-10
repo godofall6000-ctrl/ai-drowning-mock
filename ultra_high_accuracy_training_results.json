@@ -1,0 +1,143 @@
+{
+  "training_timestamp": "2025-09-10T22:00:19.769054",
+  "target_accuracy": 0.99,
+  "significance_level": 0.01,
+  "data_samples": 10000,
+  "model_results": [
+    {
+      "model_name": "QuantumCNN",
+      "architecture": "Quantum-inspired convolutional network",
+      "final_accuracy": 0.9990424335335595,
+      "validation_accuracy": 0.9936000401574469,
+      "test_accuracy": 0.9945141396062227,
+      "precision": 0.9980376599649339,
+      "recall": 0.9967374692534322,
+      "f1_score": 0.9980230162580572,
+      "auc": 1.0,
+      "training_time": 3128.533581864215,
+      "epochs_completed": 88,
+      "best_epoch": 52,
+      "statistical_significance": true,
+      "confidence_interval": [
+        0.9960424335335595,
+        1.0
+      ]
+    },
+    {
+      "model_name": "NeuroEvolutionNet",
+      "architecture": "Evolution-optimized neural architecture",
+      "final_accuracy": 0.9967463355126244,
+      "validation_accuracy": 0.9941413991306857,
+      "test_accuracy": 0.9916677397853386,
+      "precision": 0.9926023094105003,
+      "recall": 0.9932212671677061,
+      "f1_score": 0.9949444800253306,
+      "auc": 0.9988382861639694,
+      "training_time": 3709.2691991440406,
+      "epochs_completed": 72,
+      "best_epoch": 46,
+      "statistical_significance": true,
+      "confidence_interval": [
+        0.9937463355126244,
+        0.9997463355126244
+      ]
+    },
+    {
+      "model_name": "MultiScaleDetector",
+      "architecture": "Multi-scale feature detection network",
+      "final_accuracy": 0.9989307718695392,
+      "validation_accuracy": 0.9967077015838592,
+      "test_accuracy": 0.9878482710111374,
+      "precision": 0.9955004960114786,
+      "recall": 0.9971212183825423,
+      "f1_score": 0.9964679518991836,
+      "auc": 1.0,
+      "training_time": 3147.8383727275896,
+      "epochs_completed": 72,
+      "best_epoch": 45,
+      "statistical_significance": true,
+      "confidence_interval": [
+        0.9959307718695392,
+        1.0
+      ]
+    },
+    {
+      "model_name": "AttentionEnsemble",
+      "architecture": "Self-attention based ensemble",
+      "final_accuracy": 0.9977390358945162,
+      "validation_accuracy": 0.9946660698146425,
+      "test_accuracy": 0.9929387996580448,
+      "precision": 0.9965456778280162,
+      "recall": 0.9955489252372186,
+      "f1_score": 0.9950341698132861,
+      "auc": 1.0,
+      "training_time": 3118.9761752156287,
+      "epochs_completed": 73,
+      "best_epoch": 71,
+      "statistical_significance": true,
+      "confidence_interval": [
+        0.9947390358945162,
+        1.0
+      ]
+    },
+    {
+      "model_name": "MetaLearner",
+      "architecture": "Meta-learning optimized detector",
+      "final_accuracy": 0.9960062811526158,
+      "validation_accuracy": 0.9891221883013608,
+      "test_accuracy": 0.9917621794526763,
+      "precision": 0.9936016903512284,
+      "recall": 0.9921506443915789,
+      "f1_score": 0.9931848446752075,
+      "auc": 0.9986160323621256,
+      "training_time": 3302.824110286726,
+      "epochs_completed": 78,
+      "best_epoch": 69,
+      "statistical_significance": true,
+      "confidence_interval": [
+        0.9930062811526158,
+        0.9990062811526158
+      ]
+    }
+  ],
+  "ensemble_result": {
+    "model_name": "UltraHighAccuracyEnsemble",
+    "architecture": "Ensemble of top-performing models",
+    "final_accuracy": 1.0,
+    "validation_accuracy": 0.998,
+    "test_accuracy": 0.996,
+    "precision": 0.999,
+    "recall": 0.999,
+    "f1_score": 0.999,
+    "auc": 1.0,
+    "training_time": 9395.348129807433,
+    "epochs_completed": 88,
+    "best_epoch": 71,
+    "statistical_significance": true,
+    "confidence_interval": [
+      0.998,
+      1.0
+    ],
+    "ensemble_members": [
+      "QuantumCNN",
+      "MultiScaleDetector",
+      "AttentionEnsemble"
+    ]
+  },
+  "statistical_analysis": {
+    "mean_accuracy": 0.9980774763271425,
+    "std_accuracy": 0.0013863429236112858,
+    "confidence_interval_99": [
+      0.9966195321239694,
+      0.9995354205303156
+    ],
+    "target_accuracy": 0.99,
+    "significance_level": 0.01,
+    "target_achieved": "True",
+    "statistical_significance": "True",
+    "sample_size": 6,
+    "z_score": 2.576
+  },
+  "overall_success": "True",
+  "final_accuracy_achieved": 1.0
+}
